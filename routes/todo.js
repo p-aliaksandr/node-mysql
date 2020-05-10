@@ -3,9 +3,10 @@ const Todo = require('../models/todo');
 const router = Router();
 
 //получение списка задач
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-
+    const todos = await Todo.findAll();
+    res.status(200).json(todos);
   } catch(e) {
     console.log(e);
     res.status(500).json({
@@ -32,9 +33,12 @@ router.post('/', async (req, res) => {
 })
 
 //изменение задачи
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
-
+    const todo = await Todo.findByPk(+req.params.id)
+    todo.done = req.body.done;
+    await todo.save();
+    res.status(200).json({todo});
   } catch(e) {
     console.log(e);
     res.status(500).json({
